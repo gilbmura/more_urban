@@ -13,10 +13,10 @@ try:
 except Exception:
     pass
 
-# Database URL - updated to match your docker-compose
+# Database URL - updated for PostgreSQL (Render compatible)
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "mysql+pymysql://my_user:my_password@localhost:3306/my_database"
+    "postgresql://postgres:password@localhost:5432/nyc_taxi"
 )
 
 # Create engine with connection pooling
@@ -182,7 +182,7 @@ def time_series():
         if gran == "day":
             period_expr = "DATE(pickup_datetime)"
         else:
-            period_expr = "DATE_FORMAT(pickup_datetime, '%Y-%m-%d %H:00:00')"
+            period_expr = "DATE_TRUNC('hour', pickup_datetime)"
 
         sql = text(f"""
             SELECT {period_expr} AS period, COUNT(*) AS trips
