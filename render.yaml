@@ -1,0 +1,46 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: nyc-taxi-database
+    env: docker
+    dockerfilePath: ./Dockerfile.database
+    envVars:
+      - key: POSTGRES_DB
+        value: nyc_taxi
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+    disk:
+      name: postgres-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 10
+
+  # Backend API Service
+  - type: web
+    name: nyc-taxi-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 4 backend.app:app
+    envVars:
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: nyc-taxi-database
+          property: connectionString
+      - key: FLASK_DEBUG
+        value: false
+      - key: PORT
+        value: 3000
+    healthCheckPath: /health
+
+  # Frontend Static Site
+  - type: web
+    name: nyc-taxi-frontend
+    env: static
+    buildCommand: echo "Frontend build complete"
+    staticPublishPath: ./frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

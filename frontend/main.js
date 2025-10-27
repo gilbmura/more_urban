@@ -9,7 +9,12 @@
     apiBase = "https://upgraded-fishstick-x5pvwv5g44rgc6rrp-3000.app.github.dev";
   } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
     apiBase = 'http://127.0.0.1:3000';
+  } else if (hostname.includes('onrender.com')) {
+    // Auto-detect Render backend service
+    const backendName = hostname.replace('-frontend', '-backend').replace('.onrender.com', '');
+    apiBase = `https://${backendName}.onrender.com`;
   } else {
+    // Fallback: assume backend is on same domain
     apiBase = `${window.location.protocol}//${hostname}`;
   }
 
