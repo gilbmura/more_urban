@@ -10,13 +10,11 @@
   } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
     apiBase = 'http://127.0.0.1:3000';
   } else if (hostname.includes('onrender.com')) {
-    // Auto-detect Render backend service
-    if (hostname.includes('-frontend')) {
-      const backendName = hostname.replace('-frontend', '-backend');
-      apiBase = `https://${backendName}`;
+    // Handle specific frontend URL
+    if (hostname === 'more-urban-1.onrender.com') {
+      apiBase = 'https://more-urban.onrender.com';
     } else {
-      // If accessing backend directly, use same hostname
-      apiBase = `https://${hostname}`;
+      apiBase = 'https://more-urban.onrender.com';
     }
   } else {
     // Fallback: assume backend is on same domain
