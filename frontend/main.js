@@ -11,8 +11,13 @@
     apiBase = 'http://127.0.0.1:3000';
   } else if (hostname.includes('onrender.com')) {
     // Auto-detect Render backend service
-    const backendName = hostname.replace('-frontend', '-backend').replace('.onrender.com', '');
-    apiBase = `https://${backendName}.onrender.com`;
+    if (hostname.includes('-frontend')) {
+      const backendName = hostname.replace('-frontend', '-backend');
+      apiBase = `https://${backendName}`;
+    } else {
+      // If accessing backend directly, use same hostname
+      apiBase = `https://${hostname}`;
+    }
   } else {
     // Fallback: assume backend is on same domain
     apiBase = `${window.location.protocol}//${hostname}`;
