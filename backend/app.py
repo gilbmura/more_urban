@@ -107,6 +107,7 @@ def root():
         "version": "1.0",
         "endpoints": {
             "health": "/health",
+            "test": "/test",
             "summary": "/api/summary",
             "time_series": "/api/time-series?granularity=hour|day",
             "hotspots": "/api/hotspots?k=20",
@@ -116,6 +117,23 @@ def root():
             "insights": "/api/insights"
         }
     })
+
+
+@app.route("/test", methods=["GET"])
+def test():
+    """Simple test endpoint to check basic functionality"""
+    try:
+        return jsonify({
+            "status": "ok",
+            "message": "Backend is working",
+            "database_url_configured": bool(DATABASE_URL),
+            "database_url_preview": DATABASE_URL[:30] + "..." if len(DATABASE_URL) > 30 else DATABASE_URL
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e)
+        }), 500
 
 
 @app.route("/health", methods=["GET"])
@@ -134,7 +152,8 @@ def health():
         logger.error(f"Health check failed: {e}")
         return jsonify({
             "status": "unhealthy",
-            "error": str(e)
+            "error": str(e),
+            "database_url": DATABASE_URL[:50] + "..." if len(DATABASE_URL) > 50 else DATABASE_URL
         }), 503
 
 
