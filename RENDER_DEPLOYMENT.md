@@ -58,7 +58,8 @@ If you prefer manual setup instead of Blueprint:
 
 ### Backend Service:
 - **Build Command:** `pip install -r requirements.txt`
-- **Start Command:** `gunicorn --bind 0.0.0.0:$PORT --workers 4 backend.app:app`
+- **Start Command:** `gunicorn --bind 0.0.0.0:$PORT --workers 4 --chdir backend app:app`
+- **Alternative Start Command:** `gunicorn --bind 0.0.0.0:$PORT --workers 4 app:app` (using root app.py)
 - **Environment Variables:** Automatically set by render.yaml
 
 ### Frontend Service:

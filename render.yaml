@@ -21,7 +21,7 @@ services:
     name: nyc-taxi-backend
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 4 backend.app:app
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 4 --chdir backend app:app
     envVars:
       - key: DATABASE_URL
         fromService:
